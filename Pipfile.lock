@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "75fe52e496942ab51223829d89313ad4a80424bf5ae7d6afd4c5bad988077255"
+            "sha256": "abe5be9a2923994ffd85a147de1151a099c24bb3f7af7bb79bcec7a1bcf3dacc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -52,6 +52,14 @@
             ],
             "index": "pypi",
             "version": "==4.1.2"
+        },
+        "djangorestframework": {
+            "hashes": [
+                "sha256:579a333e6256b09489cbe0a067e66abe55c6595d8926be6b99423786334350c8",
+                "sha256:eb63f58c9f218e1a7d064d17a70751f528ed4e1d35547fdade9aaf4cd103fd08"
+            ],
+            "index": "pypi",
+            "version": "==3.14.0"
         },
         "psycopg2-binary": {
             "hashes": [
@@ -125,6 +133,13 @@
             ],
             "index": "pypi",
             "version": "==0.21.0"
+        },
+        "pytz": {
+            "hashes": [
+                "sha256:335ab46900b1465e714b4fda4963d87363264eb662aab5e65da039c25f1f5b22",
+                "sha256:c4d88f472f54d615e9cd582a5004d1e5f624854a6a27a6211591c251f22a6914"
+            ],
+            "version": "==2022.5"
         },
         "sqlparse": {
             "hashes": [
