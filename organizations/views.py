@@ -9,6 +9,15 @@ from .serializers import OrganizationSerializer
 class OrganizationViewSet(ModelViewSet):
   serializer_class = OrganizationSerializer
   queryset = Organization.objects.filter(status='active')
+  lookup_field = 'slug'
+  lookup_url_kwarg = 'slug'
+
+  # def get_queryset(self):
+  #   queryset = Organization.objects.filter(status='active')
+  #   # slug = self.kwargs['slug']
+  #   # if slug is not None:
+  #   #   queryset = queryset.filter(slug=slug)
+  #   return queryset
 
   # def list(self, request):
   #   queryset = Organization.objects.filter(status='ACTIVE')

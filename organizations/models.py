@@ -27,6 +27,7 @@ class Organization(models.Model):
     verbose_name="organization status",
   )
   logo_url = models.URLField(max_length=254, default=PLACEHOLDER_LOGO)
+  slug = models.SlugField(max_length=200, blank=False, null=False, unique=True)
   date_created = models.DateTimeField(default=timezone.now)
 
   class Meta:
