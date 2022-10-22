@@ -18,10 +18,16 @@ from django.urls import path
 from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework import routers, serializers, viewsets
-router = routers.DefaultRouter()
+# from rest_framework import routers, serializers, viewsets
+from rest_framework.routers import DefaultRouter
+
+from organizations.views import OrganizationViewSet
+router = DefaultRouter()
+router.register(r'api/v1/organizations', OrganizationViewSet, basename='organizations')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('organizations/', include('organizations.urls'))
+    path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
