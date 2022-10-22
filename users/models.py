@@ -1,7 +1,7 @@
 import uuid
 
 from eunoia.settings import PLACEHOLDER_PROFILE_IMAGE
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.db import models
 
@@ -9,7 +9,7 @@ from organizations.models import Organization
 from .managers import UserManager
 
 # Create your models here.
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
   id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
   username = models.CharField(verbose_name='username', unique=True, max_length=30)
   email = models.EmailField(verbose_name="email", max_length=50, unique=True)
@@ -22,16 +22,16 @@ class User(AbstractBaseUser):
   is_staff = models.BooleanField(default=False)
   is_superuser = models.BooleanField(default=False)
 
-  objects = UserManager()
-
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = ['username']
+
+  objects = UserManager()
 
   def __str__(self):
     return self.username
   
-  def has_perm(self, perm, obj=None):
-    return self.is_admin
+  # def has_perm(self, perm, obj=None):
+  #   return self.is_superuser
   
-  def has_module_perms(self, app_label):
-    return True
+  # def has_module_perms(self, app_label):
+  #   return True

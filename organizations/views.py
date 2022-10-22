@@ -1,11 +1,9 @@
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.mixins import UpdateModelMixin, CreateModelMixin, RetrieveModelMixin, ListModelMixin
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
 
 from .models import Organization
 from .serializers import OrganizationSerializer
+from .permissions import IsOrganizationAdmin
 
 # Create your views here.
 class OrganizationViewSet(ModelViewSet):
@@ -13,3 +11,12 @@ class OrganizationViewSet(ModelViewSet):
   queryset = Organization.objects.filter(status='active')
   lookup_field = 'slug'
   lookup_url_kwarg = 'slug'
+
+  def get_permissions(self):
+    if self.action in ['list', 'retrieve']:
+      permission_classes = (AllowAny,)
+    elif self.action == 'add':
+      permission_classes = (IsAuthenticated,)
+    else:
+      permission_classes = (IsOrganizationAdmin,)
+    return [permission() for permission in permission_classes]
