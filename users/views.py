@@ -3,6 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import User
 from .serializers import UserSerializer
+from .permissions import IsAccountOwner
 
 # Create your views here.
 class UserViewSet(ModelViewSet):
@@ -14,6 +15,10 @@ class UserViewSet(ModelViewSet):
   def get_permissions(self):
     if self.action in ['list', 'retrieve', 'create']:
       permission_classes = (AllowAny,)
+    elif self.action in ['update', 'partial_update']:
+      print('action:', self.action)
+      permission_classes = (IsAccountOwner,)
     else:
+      print('action:', self.action)
       permission_classes = (IsAuthenticated,)
     return [permission() for permission in permission_classes]
