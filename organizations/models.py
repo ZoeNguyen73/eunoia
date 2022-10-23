@@ -2,9 +2,12 @@ import uuid
 
 from django.db import models
 from django.utils import timezone
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 
-from .utils import OrganizationTypes, OrganizationStatuses
+from .utils import OrganizationTypes, OrganizationStatuses, unique_slug_generator
 from eunoia.settings import PLACEHOLDER_LOGO
+# from .utils import unique_slug_generator
 
 class Organization(models.Model):
   id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
@@ -27,7 +30,7 @@ class Organization(models.Model):
     verbose_name="organization status",
   )
   logo_url = models.URLField(max_length=254, default=PLACEHOLDER_LOGO)
-  slug = models.SlugField(max_length=200, blank=False, null=False, unique=True)
+  slug = models.SlugField(max_length=200, blank=True, null=True, unique=True)
   date_created = models.DateTimeField(default=timezone.now)
 
   class Meta:
@@ -35,3 +38,8 @@ class Organization(models.Model):
 
   def __str__(self):
     return self.name
+
+@receiver(pre_save, sender=Organization)
+def pre_save_receiver(sender, instance, *args, **kwargs):
+  if not instance.slug:
+    instance.slug = unique_slug_generator(instance)

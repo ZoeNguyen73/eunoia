@@ -21,11 +21,12 @@ class OrganizationSerializer(ModelSerializer):
       'email',
       'organization_type',
       'status',
+      'slug',
       'logo_url',
     ]
   
-  def create(self, validated_data):
-    return Organization.objects.create_organization(**validated_data)
+  # def create(self, validated_data):
+  #   return Organization.objects.create_organization(**validated_data)
   
   # def get_paginated_organizations(self, obj):
   #   page_size = api_settings.PAGE_SIZE
