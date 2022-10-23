@@ -5,9 +5,9 @@ from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 
-from .utils import OrganizationTypes, OrganizationStatuses
+from .utils import OrganizationTypes, OrganizationStatuses, unique_slug_generator
 from eunoia.settings import PLACEHOLDER_LOGO
-from eunoia.util import unique_slug_generator
+# from .utils import unique_slug_generator
 
 class Organization(models.Model):
   id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
