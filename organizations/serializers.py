@@ -21,6 +21,7 @@ class OrganizationSerializer(ModelSerializer):
       'email',
       'organization_type',
       'status',
+      'slug',
       'logo_url',
     ]
   
