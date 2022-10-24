@@ -149,21 +149,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-#     'ROTATE_REFRESH_TOKENS': True,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     'ALGORITHM': 'HS256',
-#     'SIGNING_KEY': os.getenv('SECRET'),
-#     'VERIFYING_KEY': None,
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-#     'USER_ID_FIELD': 'id',
-#     'USER_ID_CLAIM': 'user_id',
-#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-#     'TOKEN_TYPE_CLAIM': 'token_type',
-# }
-
 PLACEHOLDER_LOGO = 'https://ik.imagekit.io/ipy2x824p/eunoia/placeholders/logo-placeholder_HHrr_N0aM.png'
 PLACEHOLDER_PROFILE_IMAGE = 'https://ik.imagekit.io/ipy2x824p/eunoia/placeholders/profile-placeholder_pA2jdG52D.png'
 
