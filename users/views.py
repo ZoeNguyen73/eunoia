@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils.crypto import get_random_string
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 
 from .models import User
 from .serializers import UserSerializer, UserProfileImageSerializer, UserPasswordSerializer
@@ -62,15 +62,18 @@ class UserViewSet(ModelViewSet):
     verify_link = BACKEND_URL + '/users/activate/' + activation_token
 
     recipient = request.data['email']
-    message = 'Please click on this link {} to verify your email and activate your account.'.format(verify_link)
+    message = 'Please click on this <a href="{}">link</a> to verify your email and activate your account.'.format(verify_link)
 
-    send_mail(
-      'Verify your email to activate',
-      message,
-      'eunoia.singapore@gmail.com',
-      [recipient],
-      fail_silently=False
+    msg = EmailMessage(
+      from_email='Eunoia Singapore <eunoia.singapore@gmail.com>',
+      to=[recipient]
     )
+    msg.template_id = 'd-afffa213bb06481b8f3413dfba3e2476'
+    msg.dynamic_template_data = {
+      'verify_link': verify_link
+    }
+
+    msg.send(fail_silently=False)
 
     request.data['activation_token'] = activation_token
     request.data._mutable = False
