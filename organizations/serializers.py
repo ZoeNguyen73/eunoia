@@ -42,3 +42,8 @@ class OrganizationAdminSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = [ 'organization' ]
+
+class OrganizationStatusSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Organization
+    fields = [ 'status' ]

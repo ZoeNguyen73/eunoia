@@ -5,8 +5,8 @@ from rest_framework import status
 
 from .models import Organization
 from users.models import User
-from .serializers import OrganizationSerializer, OrganizationAdminSerializer
-from .permissions import IsOrganizationAdmin
+from .serializers import OrganizationSerializer, OrganizationAdminSerializer, OrganizationStatusSerializer
+from .permissions import IsOrganizationAdmin, IsSuperUser
 
 # Create your views here.
 class OrganizationViewSet(ModelViewSet):
@@ -39,7 +39,7 @@ class OrganizationAdminUpdateView(ModelViewSet):
     if action_type == 'add':
       if admin_user.organization is not None:
         return Response(
-          {'Message': ['User {} is already an admin for organization {}.'.format(admin_user.username, organization.name)]},
+          {'detail': 'User {} is already an admin for organization {}.'.format(admin_user.username, organization.name)},
           status=status.HTTP_400_BAD_REQUEST
         )
       admin_user.organization = organization
@@ -49,6 +49,33 @@ class OrganizationAdminUpdateView(ModelViewSet):
     admin_user.save()
 
     return Response(
-      {'Message': ['User {} successfully {} as admin for organization {}.'.format(admin_user.username, action_type, organization.name)]},
+      {'detail': 'User {} successfully {} as admin for organization {}.'.format(admin_user.username, action_type, organization.name)},
       status=status.HTTP_200_OK
     )
+
+class OrganizationStatusUpdateView(ModelViewSet):
+  serializer_class = OrganizationStatusSerializer
+  queryset = Organization.objects.all()
+  lookup_field = 'slug'
+  lookup_url_kwarg = 'slug'
+  permission_classes = [IsAuthenticated, IsSuperUser,]
+  http_method_names = ['patch', ]
+
+  def partial_update(self, request, action_type, *args, **kwargs):
+    organization = self.get_object()
+
+    if action_type == 'activate':
+      organization.status = 'active'
+      organization.save()
+      return Response(
+        {'Message': 'Organization {} is successfully activated.'.format(organization.name)},
+        status=status.HTTP_200_OK
+      )
+
+    elif action_type == 'deactivate':
+      organization.status = 'deactivated'
+      organization.save()
+      return Response(
+        {'Message': 'Organization {} is successfully deactivated.'.format(organization.name)},
+        status=status.HTTP_200_OK
+      )
