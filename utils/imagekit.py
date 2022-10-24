@@ -28,6 +28,6 @@ def upload_file(file, file_name):
 
 def delete_file(file_id):
   response = imagekit.delete_file(file_id)
-  if response.response_metadata.http_status_code is not 204:
+  if response.response_metadata.http_status_code != 204:
     print("Delete file error", response.get("error"))
   return

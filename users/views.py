@@ -20,12 +20,21 @@ class UserViewSet(ModelViewSet):
     if self.action in ['list', 'retrieve', 'create']:
       permission_classes = (AllowAny,)
     elif self.action in ['update', 'partial_update', 'delete']:
-      print('action:', self.action)
       permission_classes = (IsAccountOwner,)
     else:
-      print('action:', self.action)
       permission_classes = (IsAuthenticated,)
     return [permission() for permission in permission_classes]
+  
+  def create(self, request, *args, **kwargs):
+    profile_image_file = request.data.pop('profile_image', None)
+
+    if profile_image_file:
+      image_upload = upload_file(profile_image_file[0], 'profile_image')
+      request.data.__setitem__('profile_image', image_upload['url'])
+      request.data.__setitem__('profile_image_id', image_upload['id'])
+    
+    return super().create(request, *args, **kwargs)
+
 
 class UserProfileImageUpdateView(ModelViewSet):
   serializer_class = UserProfileImageSerializer
