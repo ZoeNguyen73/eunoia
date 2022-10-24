@@ -5,7 +5,7 @@ from rest_framework import status
 from django.shortcuts import redirect
 
 from .models import User
-from .serializers import UserSerializer, UserProfileImageSerializer
+from .serializers import UserSerializer, UserProfileImageSerializer, UserPasswordSerializer
 from .permissions import IsAccountOwner
 from utils.imagekit import upload_file, delete_file
 
@@ -34,15 +34,7 @@ class UserViewSet(ModelViewSet):
       request.data.__setitem__('profile_image_id', image_upload['id'])
     
     return super().create(request, *args, **kwargs)
-
-
-class UserProfileImageUpdateView(ModelViewSet):
-  serializer_class = UserProfileImageSerializer
-  queryset = User.objects.all()
-  lookup_field = 'username'
-  lookup_url_kwarg = 'username'
-  permission_classes = [IsAuthenticated, IsAccountOwner,]
-
+  
   @staticmethod
   def update_profile_image(current_profile_image_id, file, file_name):
     if current_profile_image_id:
@@ -54,6 +46,7 @@ class UserProfileImageUpdateView(ModelViewSet):
     user_object = User.objects.get(username=self.request.user)
     user = UserProfileImageSerializer(user_object).data
 
+    request.data._mutable = True
     profile_image_file = request.data.pop('profile_image', None)
     current_profile_image_id = None if user.get('profile_image_id') == '' else user.get('profile_image_id')
 
@@ -61,13 +54,8 @@ class UserProfileImageUpdateView(ModelViewSet):
       new_profile_image = self.update_profile_image(current_profile_image_id, profile_image_file[0], 'profile_image')
       request.data.__setitem__('profile_image', new_profile_image['url'])
       request.data.__setitem__('profile_image_id', new_profile_image['id'])
-      super().partial_update(request, *args, **kwargs)
-      return Response(
-      {"profile_image": ["Update done"]},
-      status = status.HTTP_201_CREATED
-    )
-    
-    return Response(
-      {"profile_image": ["Profile image file is required."]},
-      status = status.HTTP_400_BAD_REQUEST
-    )
+      request.data._mutable = False
+      return super().partial_update(request, *args, **kwargs)
+      
+    request.data._mutable = False
+    return super().partial_update(request, *args, **kwargs)

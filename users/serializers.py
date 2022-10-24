@@ -30,3 +30,13 @@ class UserProfileImageSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ['profile_image', 'profile_image_id']
+
+class UserPasswordSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ['password']
+  
+  def update(self, instance, validated_data):
+    instance.set_password(validated_data['password'])
+    instance.save()
+    return instance
