@@ -149,6 +149,13 @@ REST_FRAMEWORK = {
     ],
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
 PLACEHOLDER_LOGO = 'https://ik.imagekit.io/ipy2x824p/eunoia/placeholders/logo-placeholder_HHrr_N0aM.png'
 PLACEHOLDER_PROFILE_IMAGE = 'https://ik.imagekit.io/ipy2x824p/eunoia/placeholders/profile-placeholder_pA2jdG52D.png'
 
