@@ -15,7 +15,7 @@ class UserViewSet(ModelViewSet):
   def get_permissions(self):
     if self.action in ['list', 'retrieve', 'create']:
       permission_classes = (AllowAny,)
-    elif self.action in ['update', 'partial_update']:
+    elif self.action in ['update', 'partial_update', 'delete']:
       print('action:', self.action)
       permission_classes = (IsAccountOwner,)
     else:
