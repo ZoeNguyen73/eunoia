@@ -1,5 +1,5 @@
 # from django.core.paginator import Paginator
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework import serializers
 from rest_framework.settings import api_settings
 
 from base64 import b64encode
@@ -8,8 +8,9 @@ from urllib import parse
 
 from .models import Organization
 
-class OrganizationSerializer(ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
   # organizations = SerializerMethodField('get_paginated_organizations')
+  logo_id = serializers.CharField(required=False, write_only=True)
 
   class Meta:
     model = Organization
@@ -23,6 +24,7 @@ class OrganizationSerializer(ModelSerializer):
       'status',
       'slug',
       'logo_url',
+      'logo_id',
     ]
   
   # def create(self, validated_data):

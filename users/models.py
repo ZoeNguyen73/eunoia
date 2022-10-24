@@ -14,6 +14,7 @@ class User(AbstractBaseUser, PermissionsMixin):
   username = models.CharField(verbose_name='username', unique=True, max_length=30)
   email = models.EmailField(verbose_name="email", max_length=50, unique=True)
   profile_image = models.URLField(max_length=254, default=PLACEHOLDER_PROFILE_IMAGE)
+  profile_image_id = models.CharField(max_length=150, blank=True)
   organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, related_name='admins', null=True)
   contact_number = models.CharField(max_length=20)
   date_joined = models.DateTimeField(verbose_name='date joined', default=timezone.now)
