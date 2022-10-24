@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import UserList
+from .views import UserProfileImageUpdateView
 
 app_name = 'users'
 
 urlpatterns = [
-  path('', UserList.as_view(), name='user_list')
+  path('profile-image', UserProfileImageUpdateView.as_view({"patch": "partial_update"}), name="user_profile_image_update"),
 ]
