@@ -162,3 +162,9 @@ PLACEHOLDER_PROFILE_IMAGE = 'https://ik.imagekit.io/ipy2x824p/eunoia/placeholder
 IMAGEKIT_PRIVATE_KEY = os.getenv('IMAGEKIT_PRIVATE_KEY')
 IMAGEKIT_PUBLIC_KEY = os.getenv('IMAGEKIT_PUBLIC_KEY')
 IMAGEKIT_URL_ENDPOINT = os.getenv('IMAGEKIT_URL_ENDPOINT')
+
+EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+SENDGRID_SANDBOX_MODE_IN_DEBUG=False
+
+BACKEND_URL = 'localhost:8000/api/v1'

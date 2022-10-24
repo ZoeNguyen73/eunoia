@@ -68,7 +68,7 @@ class OrganizationStatusUpdateView(ModelViewSet):
       organization.status = 'active'
       organization.save()
       return Response(
-        {'Message': 'Organization {} is successfully activated.'.format(organization.name)},
+        {'detail': 'Organization {} is successfully activated.'.format(organization.name)},
         status=status.HTTP_200_OK
       )
 
@@ -76,6 +76,6 @@ class OrganizationStatusUpdateView(ModelViewSet):
       organization.status = 'deactivated'
       organization.save()
       return Response(
-        {'Message': 'Organization {} is successfully deactivated.'.format(organization.name)},
+        {'detail': 'Organization {} is successfully deactivated.'.format(organization.name)},
         status=status.HTTP_200_OK
       )

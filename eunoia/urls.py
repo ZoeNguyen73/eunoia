@@ -27,7 +27,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from organizations.views import OrganizationViewSet
-from users.views import UserViewSet
+from users.views import UserViewSet, UserActivateView
 
 router = DefaultRouter()
 router.register(r'api/v1/organizations', OrganizationViewSet, basename='organizations')
@@ -40,5 +40,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/v1/users/activate/<token>', UserActivateView.as_view({'patch': 'partial_update'}), name='activate'),
     path('', include(router.urls)),
 ]

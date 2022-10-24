@@ -19,9 +19,10 @@ class User(AbstractBaseUser, PermissionsMixin):
   contact_number = models.CharField(max_length=20)
   date_joined = models.DateTimeField(verbose_name='date joined', default=timezone.now)
   is_admin = models.BooleanField(default=False)
-  is_active = models.BooleanField(default=True)
+  is_active = models.BooleanField(default=False)
   is_staff = models.BooleanField(default=False)
   is_superuser = models.BooleanField(default=False)
+  activation_token = models.CharField(max_length=150, blank=True)
 
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = ['username']
