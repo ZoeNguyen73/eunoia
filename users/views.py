@@ -23,13 +23,15 @@ class UserViewSet(ModelViewSet):
     return [permission() for permission in permission_classes]
   
   def create(self, request, *args, **kwargs):
+    request.data._mutable = True
     profile_image_file = request.data.pop('profile_image', None)
 
     if profile_image_file:
       image_upload = upload_file(profile_image_file[0], 'profile_image')
       request.data.__setitem__('profile_image', image_upload['url'])
       request.data.__setitem__('profile_image_id', image_upload['id'])
-    
+
+    request.data._mutable = False
     return super().create(request, *args, **kwargs)
   
   @staticmethod

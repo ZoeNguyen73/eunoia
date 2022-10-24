@@ -4,5 +4,4 @@ from users.models import User
 
 class IsOrganizationAdmin(BasePermission):
   def has_object_permission(self, request, view, obj):
-    user_found = User.objects.get(username == request.user)
-    return request.user.organization == user_found.organization
+    return obj == request.user.organization
