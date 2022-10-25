@@ -4,11 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Organization
-from .serializers import OrganizationSerializer, OrganizationAdminSerializer, OrganizationStatusSerializer
+from .serializers import OrganizationSerializer, OrganizationAdminSerializer, OrganizationStatusSerializer, OrganizationLogoSerializer
 from .permissions import IsOrganizationAdmin, IsSuperUser
 
 from users.models import User
 from users.serializers import UserSerializer
+
+from utils.imagekit import upload_file, delete_file
 
 class OrganizationViewSet(ModelViewSet):
   serializer_class = OrganizationSerializer
@@ -24,6 +26,43 @@ class OrganizationViewSet(ModelViewSet):
     else:
       permission_classes = (IsOrganizationAdmin,)
     return [permission() for permission in permission_classes]
+
+  def create(self, request, *args, **kwargs):
+    request.data._mutable = True
+    logo_file = request.data.pop('logo_image', None)
+
+    if logo_file:
+      logo_upload = upload_file(logo_file[0], 'logo_image')
+      request.data.__setitem__('logo_url', logo_upload['url'])
+      request.data.__setitem__('logo_id', logo_upload['id'])
+
+    request.data._mutable = False
+    return super().create(request, *args, **kwargs)
+  
+  @staticmethod
+  def update_logo(current_logo_id, file, file_name):
+    if current_logo_id:
+      delete_file(current_logo_id)
+    
+    return upload_file(file, file_name)
+  
+  def partial_update(self, request, slug, *args, **kwargs):
+    organization_object = Organization.objects.get(slug=slug)
+    organization = OrganizationLogoSerializer(organization_object).data
+
+    request.data._mutable = True
+    logo_file = request.data.pop('logo_image', None)
+    current_logo_id = None if organization.get('logo_id') == '' else organization.get('logo_id')
+
+    if logo_file:
+      new_logo_image = self.update_logo(current_logo_id, logo_file[0], 'logo_image')
+      request.data.__setitem__('logo_url', new_logo_image['url'])
+      request.data.__setitem__('logo_id', new_logo_image['id'])
+      request.data._mutable = False
+      return super().partial_update(request, *args, **kwargs)
+      
+    request.data._mutable = False
+    return super().partial_update(request, *args, **kwargs)
 
 class OrganizationViewByTypeSet(ViewSet):
   http_method_names = ['get', ]
