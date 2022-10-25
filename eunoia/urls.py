@@ -26,7 +26,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from organizations.views import OrganizationViewSet
+from organizations.views import OrganizationViewSet, OrganizationViewByTypeSet
 from users.views import UserViewSet, UserActivateView, UserActivateRequestView
 
 router = DefaultRouter()
@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/v1/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/v1/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/v1/users/activate/<token>', UserActivateView.as_view({'patch': 'partial_update'}), name='activate'),
-    path('api/v1/users/request-activate/', UserActivateRequestView.as_view({'patch': 'partial_update'}), name='activate-request'),
+    path('api/v1/users/request-activate/', UserActivateRequestView.as_view({'patch': 'partial_update'}), name='activate_request'),
+    path('api/v1/<type>', OrganizationViewByTypeSet.as_view({'get': 'list'}), name='organization_type'),
     path('', include(router.urls)),
 ]

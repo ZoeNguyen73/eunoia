@@ -1,12 +1,14 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Organization
-from users.models import User
 from .serializers import OrganizationSerializer, OrganizationAdminSerializer, OrganizationStatusSerializer
 from .permissions import IsOrganizationAdmin, IsSuperUser
+
+from users.models import User
+from users.serializers import UserPasswordSerializer, UserSerializer
 
 # Create your views here.
 class OrganizationViewSet(ModelViewSet):
@@ -24,13 +26,33 @@ class OrganizationViewSet(ModelViewSet):
       permission_classes = (IsOrganizationAdmin,)
     return [permission() for permission in permission_classes]
 
+class OrganizationViewByTypeSet(ViewSet):
+  http_method_names = ['get', ]
+  permission_classes = [AllowAny,]
+  queryset = Organization.objects.filter(status='active')
+
+  def list(self, request, type):
+    if type == 'donors':
+      queryset = Organization.objects.filter(status='active', organization_type='Donor')
+    elif type == 'charities':
+      queryset = Organization.objects.filter(status='active', organization_type='Charity')
+    else:
+      queryset = Organization.objects.filter(status='active')
+    serializer = OrganizationSerializer(queryset, many=True)
+    return Response(serializer.data) 
+
 class OrganizationAdminUpdateView(ModelViewSet):
   serializer_class = OrganizationAdminSerializer
   queryset = Organization.objects.all()
   lookup_field = 'slug'
   lookup_url_kwarg = 'slug'
   permission_classes = [IsAuthenticated, IsOrganizationAdmin,]
-  http_method_names = ['patch', ]
+  http_method_names = ['patch', 'get']
+
+  def get_admins(self, request, slug):
+    organization = Organization.objects.get(slug=slug)
+    users = UserSerializer(User.objects.filter(organization=organization), many=True)
+    return Response(users.data)
 
   def partial_update(self, request, username, action_type, *args, **kwargs):
     organization = self.get_object()
