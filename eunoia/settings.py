@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'organizations',
     'users',
+    'addresses',
 ]
 
 MIDDLEWARE = [
@@ -149,9 +150,22 @@ REST_FRAMEWORK = {
     ],
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
 PLACEHOLDER_LOGO = 'https://ik.imagekit.io/ipy2x824p/eunoia/placeholders/logo-placeholder_HHrr_N0aM.png'
 PLACEHOLDER_PROFILE_IMAGE = 'https://ik.imagekit.io/ipy2x824p/eunoia/placeholders/profile-placeholder_pA2jdG52D.png'
 
 IMAGEKIT_PRIVATE_KEY = os.getenv('IMAGEKIT_PRIVATE_KEY')
 IMAGEKIT_PUBLIC_KEY = os.getenv('IMAGEKIT_PUBLIC_KEY')
 IMAGEKIT_URL_ENDPOINT = os.getenv('IMAGEKIT_URL_ENDPOINT')
+
+EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+SENDGRID_SANDBOX_MODE_IN_DEBUG=False
+
+BACKEND_URL = 'localhost:8000/api/v1'

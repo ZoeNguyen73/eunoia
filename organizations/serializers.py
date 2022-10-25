@@ -7,6 +7,7 @@ from collections import namedtuple
 from urllib import parse
 
 from .models import Organization
+from users.models import User
 
 class OrganizationSerializer(serializers.ModelSerializer):
   # organizations = SerializerMethodField('get_paginated_organizations')
@@ -36,3 +37,18 @@ class OrganizationSerializer(serializers.ModelSerializer):
   #   paginator = Paginator(organizations, page_size)
   #   paginated_organizations = paginator.page(1)
   #   serializer = 
+
+class OrganizationAdminSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = [ 'organization' ]
+
+class OrganizationStatusSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Organization
+    fields = [ 'status' ]
+
+class OrganizationLogoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Organization
+    fields = ['logo_url', 'logo_id']
