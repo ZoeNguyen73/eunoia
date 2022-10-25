@@ -28,6 +28,12 @@ class OrganizationViewSet(ModelViewSet):
     return [permission() for permission in permission_classes]
 
   def create(self, request, *args, **kwargs):
+    if request.user.organization != None:
+      return Response(
+        {'detail': 'User is already an admin of another organization'},
+        status=status.HTTP_409_CONFLICT
+      )
+
     request.data._mutable = True
     logo_file = request.data.pop('logo_image', None)
 
