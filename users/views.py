@@ -1,12 +1,82 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.utils.crypto import get_random_string
+from django.core.mail import EmailMessage
 
 from .models import User
-from .serializers import UserSerializer, UserProfileImageSerializer, UserPasswordSerializer
+from .serializers import UserSerializer, UserProfileImageSerializer
 from .permissions import IsAccountOwner
 from utils.imagekit import upload_file, delete_file
+from eunoia.settings import BACKEND_URL
 
 # Create your views here.
+class UserActivateView(ModelViewSet):
+  serializer_class = UserSerializer
+  queryset = User.objects.all()
+  http_method_names = ['patch', ]
+  permission_classes = [AllowAny,]
+  
+  def partial_update(self, request, token):
+    if User.objects.filter(activation_token=token, is_active=False).exists():
+      user = User.objects.get(activation_token=token, is_active=False)
+      user.is_active=True
+      user.activation_token=''
+      user.save()
+      return Response(
+        {'detail': 'User {} is successfully activated.'.format(user.username)},
+        status=status.HTTP_200_OK
+      )
+    else:
+      return Response(
+        {'detail': 'User cannot be activated.'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
+
+class UserActivateRequestView(ModelViewSet):
+  serializer_class = UserSerializer
+  queryset = User.objects.all()
+  http_method_names = ['patch', ]
+  permission_classes = [AllowAny,]
+
+  def partial_update(self, request):
+
+    if User.objects.filter(email=request.data['email']).exists():
+      user = User.objects.get(email=request.data['email'])
+
+      if user.is_active:
+        return Response(
+        {'detail': 'User account is already activated'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
+
+      activation_token = user.activation_token
+      verify_link = BACKEND_URL + '/users/activate/' + activation_token
+
+      recipient = request.data['email']
+
+      msg = EmailMessage(
+        from_email='Eunoia Singapore <eunoia.singapore@gmail.com>',
+        to=[recipient]
+      )
+      msg.template_id = 'd-afffa213bb06481b8f3413dfba3e2476'
+      msg.dynamic_template_data = {
+        'verify_link': verify_link
+      }
+
+      msg.send(fail_silently=False)
+
+      return Response(
+        {'detail': 'Activation email sent successfully'},
+        status=status.HTTP_200_OK
+      )
+    else:
+      return Response(
+        {'detail': 'Unable to find user with email address in database'},
+        status=status.HTTP_404_NOT_FOUND
+      )
+
 class UserViewSet(ModelViewSet):
   serializer_class = UserSerializer
   queryset = User.objects.all()
@@ -31,7 +101,25 @@ class UserViewSet(ModelViewSet):
       request.data.__setitem__('profile_image', image_upload['url'])
       request.data.__setitem__('profile_image_id', image_upload['id'])
 
+    activation_token = get_random_string(length=32)
+    verify_link = BACKEND_URL + '/users/activate/' + activation_token
+
+    recipient = request.data['email']
+
+    msg = EmailMessage(
+      from_email='Eunoia Singapore <eunoia.singapore@gmail.com>',
+      to=[recipient]
+    )
+    msg.template_id = 'd-afffa213bb06481b8f3413dfba3e2476'
+    msg.dynamic_template_data = {
+      'verify_link': verify_link
+    }
+
+    msg.send(fail_silently=False)
+
+    request.data['activation_token'] = activation_token
     request.data._mutable = False
+
     return super().create(request, *args, **kwargs)
   
   @staticmethod

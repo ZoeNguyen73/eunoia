@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
   organization = serializers.CharField(read_only=True)
   is_superuser = serializers.BooleanField(read_only=True)
   profile_image_id = serializers.CharField(required=False, write_only=True)
+  activation_token = serializers.CharField(write_only=True)
 
   class Meta:
     model = User
@@ -21,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
       'organization',
       'contact_number',
       'is_superuser',
+      'activation_token',
     ]
   
   def create(self, validated_data):
