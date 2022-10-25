@@ -28,6 +28,12 @@ class OrganizationViewSet(ModelViewSet):
     return [permission() for permission in permission_classes]
 
   def create(self, request, *args, **kwargs):
+    if request.user.organization != None:
+      return Response(
+        {'detail': 'User is already an admin of another organization'},
+        status=status.HTTP_409_CONFLICT
+      )
+
     request.data._mutable = True
     logo_file = request.data.pop('logo_image', None)
 
@@ -37,7 +43,13 @@ class OrganizationViewSet(ModelViewSet):
       request.data.__setitem__('logo_id', logo_upload['id'])
 
     request.data._mutable = False
-    return super().create(request, *args, **kwargs)
+    new_organization_data = super().create(request, *args, **kwargs)
+    created_org = Organization.objects.get(id=new_organization_data.data['id'])
+
+    request.user.organization = created_org
+    request.user.save()
+
+    return new_organization_data
   
   @staticmethod
   def update_logo(current_logo_id, file, file_name):
