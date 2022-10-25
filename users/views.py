@@ -6,7 +6,7 @@ from django.utils.crypto import get_random_string
 from django.core.mail import EmailMessage
 
 from .models import User
-from .serializers import UserSerializer, UserProfileImageSerializer, UserPasswordSerializer
+from .serializers import UserSerializer, UserProfileImageSerializer
 from .permissions import IsAccountOwner
 from utils.imagekit import upload_file, delete_file
 from eunoia.settings import BACKEND_URL
@@ -32,6 +32,49 @@ class UserActivateView(ModelViewSet):
       return Response(
         {'detail': 'User cannot be activated.'},
         status=status.HTTP_400_BAD_REQUEST
+      )
+
+class UserActivateRequestView(ModelViewSet):
+  serializer_class = UserSerializer
+  queryset = User.objects.all()
+  http_method_names = ['patch', ]
+  permission_classes = [AllowAny,]
+
+  def partial_update(self, request):
+
+    if User.objects.filter(email=request.data['email']).exists():
+      user = User.objects.get(email=request.data['email'])
+
+      if user.is_active:
+        return Response(
+        {'detail': 'User account is already activated'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
+
+      activation_token = user.activation_token
+      verify_link = BACKEND_URL + '/users/activate/' + activation_token
+
+      recipient = request.data['email']
+
+      msg = EmailMessage(
+        from_email='Eunoia Singapore <eunoia.singapore@gmail.com>',
+        to=[recipient]
+      )
+      msg.template_id = 'd-afffa213bb06481b8f3413dfba3e2476'
+      msg.dynamic_template_data = {
+        'verify_link': verify_link
+      }
+
+      msg.send(fail_silently=False)
+
+      return Response(
+        {'detail': 'Activation email sent successfully'},
+        status=status.HTTP_200_OK
+      )
+    else:
+      return Response(
+        {'detail': 'Unable to find user with email address in database'},
+        status=status.HTTP_404_NOT_FOUND
       )
 
 class UserViewSet(ModelViewSet):
@@ -62,7 +105,6 @@ class UserViewSet(ModelViewSet):
     verify_link = BACKEND_URL + '/users/activate/' + activation_token
 
     recipient = request.data['email']
-    message = 'Please click on this <a href="{}">link</a> to verify your email and activate your account.'.format(verify_link)
 
     msg = EmailMessage(
       from_email='Eunoia Singapore <eunoia.singapore@gmail.com>',
