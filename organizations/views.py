@@ -8,9 +8,8 @@ from .serializers import OrganizationSerializer, OrganizationAdminSerializer, Or
 from .permissions import IsOrganizationAdmin, IsSuperUser
 
 from users.models import User
-from users.serializers import UserPasswordSerializer, UserSerializer
+from users.serializers import UserSerializer
 
-# Create your views here.
 class OrganizationViewSet(ModelViewSet):
   serializer_class = OrganizationSerializer
   queryset = Organization.objects.filter(status='active')
@@ -20,7 +19,7 @@ class OrganizationViewSet(ModelViewSet):
   def get_permissions(self):
     if self.action in ['list', 'retrieve']:
       permission_classes = (AllowAny,)
-    elif self.action == 'add':
+    elif self.action in ['add', 'create']:
       permission_classes = (IsAuthenticated,)
     else:
       permission_classes = (IsOrganizationAdmin,)
