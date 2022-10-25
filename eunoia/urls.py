@@ -35,7 +35,7 @@ router.register(r'api/v1/users', UserViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('organizations/', include('organizations.urls'))
+    path('api/v1/organizations/<slug>/addresses/', include('addresses.urls')),
     path('api/v1/organizations/<slug>/', include('organizations.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/v1/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
