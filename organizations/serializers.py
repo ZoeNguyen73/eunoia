@@ -47,3 +47,8 @@ class OrganizationStatusSerializer(serializers.ModelSerializer):
   class Meta:
     model = Organization
     fields = [ 'status' ]
+
+class OrganizationLogoSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Organization
+    fields = ['logo_url', 'logo_id']
