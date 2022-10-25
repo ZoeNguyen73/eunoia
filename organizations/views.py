@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,6 +23,21 @@ class OrganizationViewSet(ModelViewSet):
     else:
       permission_classes = (IsOrganizationAdmin,)
     return [permission() for permission in permission_classes]
+
+class OrganizationViewByTypeSet(ViewSet):
+  http_method_names = ['get', ]
+  permission_classes = [AllowAny,]
+  queryset = Organization.objects.filter(status='active')
+
+  def list(self, request, type):
+    if type == 'donors':
+      queryset = Organization.objects.filter(status='active', organization_type='Donor')
+    elif type == 'charities':
+      queryset = Organization.objects.filter(status='active', organization_type='Charity')
+    else:
+      queryset = Organization.objects.filter(status='active')
+    serializer = OrganizationSerializer(queryset, many=True)
+    return Response(serializer.data) 
 
 class OrganizationAdminUpdateView(ModelViewSet):
   serializer_class = OrganizationAdminSerializer
