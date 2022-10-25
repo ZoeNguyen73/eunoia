@@ -37,7 +37,13 @@ class OrganizationViewSet(ModelViewSet):
       request.data.__setitem__('logo_id', logo_upload['id'])
 
     request.data._mutable = False
-    return super().create(request, *args, **kwargs)
+    new_organization_data = super().create(request, *args, **kwargs)
+    created_org = Organization.objects.get(id=new_organization_data.data['id'])
+
+    request.user.organization = created_org
+    request.user.save()
+
+    return new_organization_data
   
   @staticmethod
   def update_logo(current_logo_id, file, file_name):
