@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Organization
-from users.models import User
 from .serializers import OrganizationSerializer, OrganizationAdminSerializer, OrganizationStatusSerializer
 from .permissions import IsOrganizationAdmin, IsSuperUser
+
+from users.models import User
+from users.serializers import UserPasswordSerializer, UserSerializer
 
 # Create your views here.
 class OrganizationViewSet(ModelViewSet):
@@ -45,7 +47,12 @@ class OrganizationAdminUpdateView(ModelViewSet):
   lookup_field = 'slug'
   lookup_url_kwarg = 'slug'
   permission_classes = [IsAuthenticated, IsOrganizationAdmin,]
-  http_method_names = ['patch', ]
+  http_method_names = ['patch', 'get']
+
+  def get_admins(self, request, slug):
+    organization = Organization.objects.get(slug=slug)
+    users = UserSerializer(User.objects.filter(organization=organization), many=True)
+    return Response(users.data)
 
   def partial_update(self, request, username, action_type, *args, **kwargs):
     organization = self.get_object()
