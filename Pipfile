@@ -11,6 +11,7 @@ djangorestframework = "*"
 imagekitio = "*"
 djangorestframework-simplejwt = "*"
 django-sendgrid-v5 = "*"
+gunicorn = "*"
 
 [dev-packages]
 
