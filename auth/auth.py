@@ -9,7 +9,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     token = super().get_token(user)
 
     token['username'] = user.username
-    token['organization'] = user.organization.name
+    token['organization'] = None if user.organization == None else user.organization.name
     token['user_id'] = str(user.id)
     token['profile_image'] = user.profile_image
     return token

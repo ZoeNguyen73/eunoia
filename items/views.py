@@ -27,6 +27,11 @@ class ItemViewSet(ModelViewSet):
 
   def create(self, request, slug, *args, **kwargs):
     organization = Organization.objects.get(slug=slug)
+    if organization.organization_type == 'Charity':
+      return Response(
+        {'detail': 'Charity organizations cannot create item'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     if organization != request.user.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},
@@ -43,7 +48,6 @@ class ItemViewSet(ModelViewSet):
       request.data.__setitem__('image_id', image_upload['id'])
 
     request.data._mutable = False
-
     return super().create(request, *args, **kwargs)
 
 

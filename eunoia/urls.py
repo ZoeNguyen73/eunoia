@@ -25,6 +25,7 @@ from auth.auth import CustomObtainTokenPairView
 
 from organizations.views import OrganizationViewSet, OrganizationViewByTypeSet
 from users.views import UserViewSet, UserActivateView, UserActivateRequestView
+from listings.views import ListingViewSet
 
 router = DefaultRouter()
 router.register(r'api/v1/organizations', OrganizationViewSet, basename='organizations')
@@ -32,6 +33,7 @@ router.register(r'api/v1/users', UserViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/listings/', include('listings.urls')),
     path('api/v1/organizations/<slug>/addresses/', include('addresses.urls')),
     path('api/v1/organizations/<slug>/items/', include('items.urls')),
     path('api/v1/organizations/<slug>/', include('organizations.urls')),

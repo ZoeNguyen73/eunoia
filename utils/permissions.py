@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
 
-class IsOrganizationAdmin(BasePermission):
+class IsSuperUser(BasePermission):
   def has_object_permission(self, request, view, obj):
-    return obj == request.user.organization
+    return request.user.is_superuser

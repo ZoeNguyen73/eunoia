@@ -10,9 +10,9 @@ from .utils import ListingStatuses
 
 class Listing(models.Model):
   id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
-  item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='item')
-  organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='organization')
-  collection_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='collection_address')
+  item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='listing', null=True)
+  organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='listing', null=True)
+  collection_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='listing', null=True)
   status = models.CharField(
     max_length=254,
     choices=ListingStatuses.choices(),
