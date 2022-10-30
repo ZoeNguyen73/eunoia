@@ -25,7 +25,6 @@ from auth.auth import CustomObtainTokenPairView
 
 from organizations.views import OrganizationViewSet, OrganizationViewByTypeSet
 from users.views import UserViewSet, UserActivateView, UserActivateRequestView
-from listings.views import ListingViewSet
 
 router = DefaultRouter()
 router.register(r'api/v1/organizations', OrganizationViewSet, basename='organizations')
