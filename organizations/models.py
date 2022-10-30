@@ -19,14 +19,14 @@ class Organization(models.Model):
     choices=OrganizationTypes.choices(), 
     default=OrganizationTypes.DONOR, 
     blank=False,
-    verbose_name="organization type",
+    verbose_name='organization type',
   )
   status = models.CharField(
     max_length=254,
     choices=OrganizationStatuses.choices(),
     default='pending', 
     blank=False,
-    verbose_name="organization status",
+    verbose_name='organization status',
   )
   logo_url = models.URLField(max_length=254, default=PLACEHOLDER_LOGO)
   logo_id = models.CharField(max_length=150, blank=True)
