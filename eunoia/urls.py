@@ -32,6 +32,7 @@ router.register(r'api/v1/users', UserViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/listings/', include('listings.urls')),
     path('api/v1/organizations/<slug>/addresses/', include('addresses.urls')),
     path('api/v1/organizations/<slug>/items/', include('items.urls')),
     path('api/v1/organizations/<slug>/', include('organizations.urls')),

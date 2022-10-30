@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'users',
     'addresses',
     'items',
+    'listings',
 ]
 
 MIDDLEWARE = [
