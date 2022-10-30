@@ -11,6 +11,7 @@ class ItemSerializer(serializers.ModelSerializer):
       'description',
       'item_type',
       'organization',
-      'postal_code',
+      'image_url',
+      'image_id',
       'date_created',
     ]
