@@ -5,10 +5,11 @@ from rest_framework import status
 
 from .models import Organization
 from .serializers import OrganizationSerializer, OrganizationAdminSerializer, OrganizationStatusSerializer, OrganizationLogoSerializer
-from .permissions import IsOrganizationAdmin, IsSuperUser
+from .permissions import IsOrganizationAdmin
 
 from users.models import User
 from users.serializers import UserSerializer
+from utils.permissions import IsSuperUser
 
 from utils.imagekit import upload_file, delete_file
 
