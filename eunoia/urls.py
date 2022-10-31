@@ -41,6 +41,6 @@ urlpatterns = [
     path('api/v1/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/v1/users/activate/<token>', UserActivateView.as_view({'patch': 'partial_update'}), name='activate'),
     path('api/v1/users/request-activate/', UserActivateRequestView.as_view({'patch': 'partial_update'}), name='activate_request'),
-    path('api/v1/organizations/types/<type>', OrganizationViewByTypeSet.as_view({'get': 'list'}), name='organization_type'),
+    path('api/v1/organizations/types/<type>/', OrganizationViewByTypeSet.as_view({'get': 'list'}), name='organization_type'),
     path('', include(router.urls)),
 ]
