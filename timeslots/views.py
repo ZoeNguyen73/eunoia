@@ -70,11 +70,17 @@ class TimeslotListCreateViewSet(ModelViewSet):
         {"detail": "You do not have permission to perform this action."},
         status=status.HTTP_403_FORBIDDEN
       )
+    
+    if Timeslot.objects.filter(listing=listing, date=request.data['date'], timeslot_option=request.data['timeslot_option']).exists():
+      return Response(
+        {"detail": "Timeslot already exists in database"},
+        status=status.HTTP_400_BAD_REQUEST
+      )
 
     request.data._mutable = True
     request.data['listing'] = listing.id
     request.data._mutable = False
-    
+
     return super().create(request, *args, **kwargs)
 
 
