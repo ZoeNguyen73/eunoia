@@ -12,6 +12,7 @@ imagekitio = "*"
 djangorestframework-simplejwt = "*"
 django-sendgrid-v5 = "*"
 gunicorn = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
