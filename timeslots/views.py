@@ -14,6 +14,8 @@ from listings.models import Listing
 
 class TimeslotListCreateViewSet(ModelViewSet):
   serializer_class = TimeslotSerializer
+  lookup_field = 'timeslot_id'
+  lookup_url_kwarg = 'timeslot_id'
 
   @staticmethod
   def is_valid_uuid(val):
@@ -26,7 +28,7 @@ class TimeslotListCreateViewSet(ModelViewSet):
   def get_permissions(self):
     if self.action in ['list',]:
       permission_classes = (AllowAny,)
-    elif self.action in ['create',]:
+    elif self.action in ['create', 'destroy']:
       permission_classes = [IsAuthenticated,]
     else:
       permission_classes = (IsSuperUser,)
@@ -82,5 +84,59 @@ class TimeslotListCreateViewSet(ModelViewSet):
     request.data._mutable = False
 
     return super().create(request, *args, **kwargs)
+
+
+class TimeslotDeleteView(ModelViewSet):
+  serializer_class = TimeslotSerializer
+  permission_class = [AllowAny,]
+  lookup_field = 'id'
+  lookup_url_kwarg = 'timeslot_id'
+  queryset = Timeslot.objects.all()
+
+  @staticmethod
+  def is_valid_uuid(val):
+    try:
+      uuid.UUID(str(val))
+      return True
+    except ValueError:
+      return False
+  
+  def get_permissions(self):
+    if self.action in ['list',]:
+      permission_classes = (AllowAny,)
+    elif self.action in ['create', 'destroy']:
+      permission_classes = [IsAuthenticated,]
+    else:
+      permission_classes = (IsSuperUser,)
+    return [permission() for permission in permission_classes]
+  
+  def destroy(self, request, id, timeslot_id):
+    if not self.is_valid_uuid(id):
+      return Response(
+        {'detail': 'Listing id is invalid'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
+
+    listing = Listing.objects.get(id=id)
+    if listing is None:
+      return Response(
+        {'detail': 'Listing id cannot be found'},
+        status=status.HTTP_404_NOT_FOUND
+      )
+
+    if listing.organization != request.user.organization:
+      return Response(
+        {"detail": "You do not have permission to perform this action."},
+        status=status.HTTP_403_FORBIDDEN
+      )
+    
+    timeslot = Timeslot.objects.get(id=timeslot_id)
+    if listing != timeslot.listing:
+      return Response(
+        {'detail': 'Listing id is invalid'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
+    
+    return super().destroy(request)
 
 

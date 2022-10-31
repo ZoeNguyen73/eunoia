@@ -140,7 +140,7 @@ class ListingRetrieveUpdateDeleteViewSet(ModelViewSet):
     return super().partial_update(request, *args, **kwargs)
   
   def destroy(self, request, id):
-    listing = Listing.objects.get(id=id);
+    listing = Listing.objects.get(id=id)
     if request.user.organization != listing.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},
