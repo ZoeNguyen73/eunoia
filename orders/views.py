@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -56,3 +56,31 @@ class OrderListCreateViewSet(ModelViewSet):
     request.data._mutable = False
     
     return super().create(request, *args, **kwargs)
+
+class OrderRetrieveUpdateViewSet(ModelViewSet):
+  serializer_class = OrderUpdateSerializer
+  permission_classes = [IsAuthenticated,]
+  lookup_field = 'id'
+  lookup_url_kwarg = 'id'
+  queryset = Order.objects.all()
+
+  def retrieve(self, request, id):
+    queryset = Order.objects.all()
+    order = get_object_or_404(queryset, id=id)
+
+    if str(request.user.organization) != str(order.charity_org_name) and str(request.user.organization) != str(order.donor_org_name):
+      return Response(
+        {"detail": "You do not have permission to perform this action."},
+        status=status.HTTP_403_FORBIDDEN
+      )
+    serializer = OrderUpdateSerializer(order)
+    return Response(serializer.data)
+
+  def partial_update(self, request, id):
+    order = Order.objects.get(id=id)
+    if str(request.user.organization) != str(order.charity_org_name) and str(request.user.organization) != str(order.donor_org_name):
+      return Response(
+        {"detail": "You do not have permission to perform this action."},
+        status=status.HTTP_403_FORBIDDEN
+      )
+    return super().partial_update(request)
