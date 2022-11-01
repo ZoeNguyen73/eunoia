@@ -33,6 +33,7 @@ router.register(r'api/v1/users', UserViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/carts/listings/', include('cart_listings.urls')),
     path('api/v1/carts/', CartViewSet.as_view({'post': 'create', 'get': 'retrieve'}), name='cart_create_retrieve'),
     path('api/v1/listings/', include('listings.urls')),
     path('api/v1/listings/<id>/timeslots/', include('timeslots.urls')),

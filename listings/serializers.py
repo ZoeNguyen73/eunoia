@@ -13,7 +13,6 @@ class ListingSerializer(serializers.ModelSerializer):
       'organization',
       'status',
       'expiry_date',
-      'collection_time',
       'date_created',
     ]
 
@@ -29,6 +28,5 @@ class ListingUpdateSerializer(serializers.ModelSerializer):
       'organization',
       'status',
       'expiry_date',
-      'collection_time',
       'date_created',
     ]
