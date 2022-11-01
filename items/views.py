@@ -15,6 +15,11 @@ class ItemViewSet(ModelViewSet):
   permission_classes = [IsAuthenticated,]
 
   def list(self, request, slug):
+    if request.user.organization is None:
+      return Response(
+        {'detail': 'You are not an admin of any organization'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     organization = Organization.objects.get(slug=slug)
     if organization != request.user.organization:
       return Response(
