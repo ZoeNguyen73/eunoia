@@ -119,6 +119,12 @@ class ListingRetrieveUpdateDeleteViewSet(ModelViewSet):
         {"detail": "You do not have permission to perform this action."},
         status=status.HTTP_403_FORBIDDEN
       )
+    
+    if listing.status == 'confirmed':
+      return Response(
+        {"detail": "Confirmed listing cannot be edited"},
+        status=status.HTTP_400_BAD_REQUEST
+      )
 
     if request.data['collection_address']:
       if not self.is_valid_uuid(request.data['collection_address']):
