@@ -12,6 +12,7 @@ from organizations.models import Organization
 class CartViewSet(ModelViewSet):
   serializer_class = CartSerializer
   permission_classes = [IsAuthenticated,]
+  queryset = Cart.objects.all()
 
   def create(self, request):
     if request.user.organization is None:
