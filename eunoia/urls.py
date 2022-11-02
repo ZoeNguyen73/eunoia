@@ -26,7 +26,7 @@ from auth.auth import CustomObtainTokenPairView
 from organizations.views import OrganizationViewSet, OrganizationViewByTypeSet
 from users.views import UserViewSet, UserActivateView, UserActivateRequestView
 from carts.views import CartViewSet
-from orders.views import OrderListCreateViewSet, OrderRetrieveUpdateViewSet
+from orders.views import OrderListCreateViewSet, OrderRetrieveUpdateViewSet, OrderStatusViewSet
 from order_listings.views import OrderListingViewSet
 
 router = DefaultRouter()
@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/v1/listings/<id>/timeslots/', include('timeslots.urls')),
     path('api/v1/organizations/<slug>/orders/', OrderListCreateViewSet.as_view({'get': 'list', 'post': 'create'}), name='organization_orders'),
     path('api/v1/orders/<id>/listings/', OrderListingViewSet.as_view({'get': 'list', 'post': 'create'}), name='order_listing_list_create'),
+    path('api/v1/orders/<id>/status/<action>/', OrderStatusViewSet.as_view({'patch': 'partial_update'}), name='order_status_update'),
     path('api/v1/orders/<id>/', OrderRetrieveUpdateViewSet.as_view({'get': 'retrieve', 'patch': 'partial_update'}), name='order_retrieve_update'),
     path('api/v1/organizations/<slug>/addresses/', include('addresses.urls')),
     path('api/v1/organizations/<slug>/items/', include('items.urls')),
