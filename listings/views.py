@@ -35,7 +35,7 @@ class ListingListCreateViewSet(ModelViewSet):
     return [permission() for permission in permission_classes]
   
   def list(self, request):
-    queryset = Listing.objects.all().exclude(status='inactive')
+    queryset = Listing.objects.filter(status='active')
     serializer = ListingSerializer(queryset, many=True)
     return Response(serializer.data)
   
@@ -119,6 +119,12 @@ class ListingRetrieveUpdateDeleteViewSet(ModelViewSet):
         {"detail": "You do not have permission to perform this action."},
         status=status.HTTP_403_FORBIDDEN
       )
+    
+    if listing.status == 'confirmed':
+      return Response(
+        {"detail": "Confirmed listing cannot be edited"},
+        status=status.HTTP_400_BAD_REQUEST
+      )
 
     if request.data['collection_address']:
       if not self.is_valid_uuid(request.data['collection_address']):
@@ -140,7 +146,7 @@ class ListingRetrieveUpdateDeleteViewSet(ModelViewSet):
     return super().partial_update(request, *args, **kwargs)
   
   def destroy(self, request, id):
-    listing = Listing.objects.get(id=id);
+    listing = Listing.objects.get(id=id)
     if request.user.organization != listing.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},

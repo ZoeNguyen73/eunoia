@@ -30,6 +30,11 @@ class AddressViewSet(ModelViewSet):
   
   def create(self, request, slug, *args, **kwargs):
     organization = Organization.objects.get(slug=slug)
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Only active organization can create addresses'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     if organization != request.user.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},
@@ -55,6 +60,11 @@ class AddressRetrieveViewSet(ModelViewSet):
   
   def destroy(self, request, slug, id):
     organization = Organization.objects.get(slug=slug)
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Organization status is not active'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     if organization != request.user.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},
@@ -64,6 +74,11 @@ class AddressRetrieveViewSet(ModelViewSet):
   
   def partial_update(self, request, slug, id, *args, **kwargs):
     organization = Organization.objects.get(slug=slug)
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Organization status is not active'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     if organization != request.user.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},
@@ -79,6 +94,11 @@ class AddressDefaultUpdateSet(ModelViewSet):
 
   def partial_update(self, request, slug, id):
     organization = Organization.objects.get(slug=slug)
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Organization status is not active'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     if organization != request.user.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},

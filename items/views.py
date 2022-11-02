@@ -15,6 +15,11 @@ class ItemViewSet(ModelViewSet):
   permission_classes = [IsAuthenticated,]
 
   def list(self, request, slug):
+    if request.user.organization is None:
+      return Response(
+        {'detail': 'You are not an admin of any organization'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     organization = Organization.objects.get(slug=slug)
     if organization != request.user.organization:
       return Response(
@@ -36,6 +41,11 @@ class ItemViewSet(ModelViewSet):
       return Response(
         {"detail": "You do not have permission to perform this action."},
         status=status.HTTP_403_FORBIDDEN
+      )
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Only active organization can create items'},
+        status=status.HTTP_400_BAD_REQUEST
       )
     request.data._mutable = True
     request.data['organization'] = organization.id
@@ -84,6 +94,11 @@ class ItemRetrieveViewSet(ModelViewSet):
         {"detail": "You do not have permission to perform this action."},
         status=status.HTTP_403_FORBIDDEN
       )
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Only active organization can make changes to items'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     return super().destroy(request)
   
   def partial_update(self, request, slug, id, *args, **kwargs):
@@ -93,7 +108,11 @@ class ItemRetrieveViewSet(ModelViewSet):
         {"detail": "You do not have permission to perform this action."},
         status=status.HTTP_403_FORBIDDEN
       )
-    
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Only active organization can make changes to items'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     item = Item.objects.get(id=id)
     request.data._mutable = True
     image_file = request.data.pop('image', None)

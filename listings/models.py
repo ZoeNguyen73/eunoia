@@ -20,8 +20,7 @@ class Listing(models.Model):
     blank=False,
     verbose_name='listing status',
   )
-  expiry_date = models.CharField(max_length=100)
-  collection_time = models.CharField(max_length=254)
+  expiry_date = models.DateField(null=True, blank=True)
   date_created = models.DateTimeField(default=timezone.now)
 
   class Meta:
