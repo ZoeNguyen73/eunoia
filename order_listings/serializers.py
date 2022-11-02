@@ -13,4 +13,5 @@ class OrderListingSerializer(serializers.ModelSerializer):
       'description',
       'expiry_date',
       'image_url',
+      'listing_id',
       ]

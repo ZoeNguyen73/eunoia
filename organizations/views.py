@@ -10,6 +10,9 @@ from .permissions import IsOrganizationAdmin
 from users.models import User
 from users.serializers import UserSerializer
 from utils.permissions import IsSuperUser
+from carts.models import Cart
+from listings.models import Listing
+from cart_listings.models import Cart_Listing
 
 from utils.imagekit import upload_file, delete_file
 
@@ -148,6 +151,21 @@ class OrganizationStatusUpdateView(ModelViewSet):
     elif action_type == 'deactivate':
       organization.status = 'deactivated'
       organization.save()
+
+      if Cart.objects.filter(organization=organization).exists():
+        cart = Cart.objects.get(organization=organization)
+        cart.delete()
+
+      if Listing.objects.filter(organization=organization).exists():
+        listings = Listing.objects.filter(organization=organization)
+        for listing in listings:
+          listing.status = 'inactive'
+          listing.save()
+          if Cart_Listing.objects.filter(listing=listing).exists():
+            cart_listings = Cart_Listing.objects.filter(listing=listing)
+            for cart_listing in cart_listings:
+              cart_listing.delete()  
+
       return Response(
         {'detail': 'Organization {} is successfully deactivated.'.format(organization.name)},
         status=status.HTTP_200_OK

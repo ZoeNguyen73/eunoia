@@ -35,7 +35,7 @@ class ListingListCreateViewSet(ModelViewSet):
     return [permission() for permission in permission_classes]
   
   def list(self, request):
-    queryset = Listing.objects.all().exclude(status='inactive')
+    queryset = Listing.objects.filter(status='active')
     serializer = ListingSerializer(queryset, many=True)
     return Response(serializer.data)
   

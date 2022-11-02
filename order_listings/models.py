@@ -11,6 +11,7 @@ class Order_Listing(models.Model):
   description = models.CharField(max_length=200, blank=True)
   expiry_date = models.DateField(null=True, blank=True)
   image_url = models.URLField(max_length=254, default=PLACEHOLDER_LOGO)
+  listing_id = models.CharField(max_length=200, blank=True)
 
   def __str__(self):
     return self.id
