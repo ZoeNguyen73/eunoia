@@ -21,6 +21,11 @@ class CartViewSet(ModelViewSet):
         status=status.HTTP_400_BAD_REQUEST
       )
     organization = Organization.objects.get(name=request.user.organization)
+    if organization.status != 'active':
+      return Response(
+        {'detail': 'Only active organization can create addresses'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
     if organization.organization_type == 'Donor':
       return Response(
         {'detail': 'Donor organizations cannot create cart'},
