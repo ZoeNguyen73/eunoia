@@ -12,6 +12,7 @@ class ListingSerializer(serializers.ModelSerializer):
       'collection_address',
       'organization',
       'status',
+      'amount',
       'expiry_date',
       'date_created',
     ]
@@ -26,6 +27,7 @@ class ListingUpdateSerializer(serializers.ModelSerializer):
       'item',
       'collection_address',
       'organization',
+      'amount',
       'status',
       'expiry_date',
       'date_created',
