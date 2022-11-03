@@ -4,14 +4,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils.crypto import get_random_string
 from django.core.mail import EmailMessage
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from .models import User
 from .serializers import UserSerializer, UserProfileImageSerializer
 from .permissions import IsAccountOwner
 from utils.imagekit import upload_file, delete_file
-from eunoia.settings import BACKEND_URL
 
-# Create your views here.
 class UserActivateView(ModelViewSet):
   serializer_class = UserSerializer
   queryset = User.objects.all()
@@ -51,8 +52,9 @@ class UserActivateRequestView(ModelViewSet):
         status=status.HTTP_400_BAD_REQUEST
       )
 
+      FRONT_END_URL = os.getenv('FRONT_END_URL')
       activation_token = user.activation_token
-      verify_link = BACKEND_URL + '/users/activate/' + activation_token
+      verify_link = FRONT_END_URL + '/users/activate/' + activation_token
 
       recipient = request.data['email']
 
@@ -95,14 +97,14 @@ class UserViewSet(ModelViewSet):
   def create(self, request, *args, **kwargs):
     request.data._mutable = True
     profile_image_file = request.data.pop('profile_image', None)
-
-    if profile_image_file:
+    if profile_image_file and profile_image_file[0] != '':
       image_upload = upload_file(profile_image_file[0], 'profile_image')
       request.data.__setitem__('profile_image', image_upload['url'])
       request.data.__setitem__('profile_image_id', image_upload['id'])
 
     activation_token = get_random_string(length=32)
-    verify_link = BACKEND_URL + '/users/activate/' + activation_token
+    FRONT_END_URL = os.getenv('FRONT_END_URL')
+    verify_link = FRONT_END_URL + '/users/activate/' + activation_token
 
     recipient = request.data['email']
 
@@ -119,7 +121,6 @@ class UserViewSet(ModelViewSet):
 
     request.data['activation_token'] = activation_token
     request.data._mutable = False
-
     return super().create(request, *args, **kwargs)
   
   @staticmethod
