@@ -10,6 +10,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     token['username'] = user.username
     token['organization'] = None if user.organization == None else user.organization.name
+    token['organization_slug'] = None if user.organization == None else user.organization.slug
     token['user_id'] = str(user.id)
     token['profile_image'] = user.profile_image
     return token
