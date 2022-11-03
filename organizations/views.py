@@ -41,7 +41,7 @@ class OrganizationViewSet(ModelViewSet):
     request.data._mutable = True
     logo_file = request.data.pop('logo_image', None)
 
-    if logo_file:
+    if logo_file and logo_file[0] != '':
       logo_upload = upload_file(logo_file[0], 'logo_image')
       request.data.__setitem__('logo_url', logo_upload['url'])
       request.data.__setitem__('logo_id', logo_upload['id'])
