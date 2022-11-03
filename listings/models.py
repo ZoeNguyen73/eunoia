@@ -13,6 +13,7 @@ class Listing(models.Model):
   item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='listing', null=True)
   organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='listing', null=True)
   collection_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='listing', null=True)
+  amount = models.CharField(max_length=254, blank=False, verbose_name='amount')
   status = models.CharField(
     max_length=254,
     choices=ListingStatuses.choices(),
