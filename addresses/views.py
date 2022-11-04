@@ -91,6 +91,7 @@ class AddressDefaultUpdateSet(ModelViewSet):
   lookup_field = 'id'
   lookup_url_kwarg = 'id'
   queryset = Address.objects.all()
+  permission_classes = [IsAuthenticated,]
 
   def partial_update(self, request, slug, id):
     organization = Organization.objects.get(slug=slug)
@@ -99,6 +100,7 @@ class AddressDefaultUpdateSet(ModelViewSet):
         {'detail': 'Organization status is not active'},
         status=status.HTTP_400_BAD_REQUEST
       )
+    
     if organization != request.user.organization:
       return Response(
         {"detail": "You do not have permission to perform this action."},
