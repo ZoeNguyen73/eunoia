@@ -52,7 +52,7 @@ class ItemViewSet(ModelViewSet):
 
     image_file = request.data.pop('image', None)
 
-    if image_file:
+    if image_file and image_file[0] != '':
       image_upload = upload_file(image_file[0], 'item_image')
       request.data.__setitem__('image_url', image_upload['url'])
       request.data.__setitem__('image_id', image_upload['id'])
@@ -118,7 +118,7 @@ class ItemRetrieveViewSet(ModelViewSet):
     image_file = request.data.pop('image', None)
     current_image_id = None if item.image_id == '' else item.image_id
 
-    if image_file:
+    if image_file and image_file[0] != '':
       new_image_upload = self.update_image(current_image_id, image_file[0], 'item_image')
       request.data.__setitem__('image_url', new_image_upload['url'])
       request.data.__setitem__('image_id', new_image_upload['id'])
