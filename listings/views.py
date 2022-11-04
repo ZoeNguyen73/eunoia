@@ -37,6 +37,10 @@ class ListingListCreateViewSet(ModelViewSet):
   
   def list(self, request):
     queryset = Listing.objects.filter(status='active')
+    if 'category' in request.GET:
+      string = request.GET['category']
+      filter = string.split(',')
+      queryset = Listing.objects.filter(status='active', item__item_type__in=filter)
     serializer = ListingSerializer(queryset, many=True)
     return Response(serializer.data)
   
