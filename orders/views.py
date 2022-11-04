@@ -25,7 +25,10 @@ class OrderListCreateViewSet(ModelViewSet):
         {"detail": "You do not have permission to perform this action."},
         status=status.HTTP_403_FORBIDDEN
       )
-    queryset = Order.objects.filter(charity_ord_id=organization.id)
+    if organization.organization_type == 'Charity':
+      queryset = Order.objects.filter(charity_org_id=organization.id)
+    if organization.organization_type == 'Donor':
+      queryset = Order.objects.filter(donor_org_id=organization.id)
     serializer = OrderSerializer(queryset, many=True)
     return Response(serializer.data)
   
@@ -100,6 +103,7 @@ class OrderRetrieveUpdateViewSet(ModelViewSet):
     return Response(serializer.data)
 
   def partial_update(self, request, id):
+    print('requestdata', request.data)
     order = Order.objects.get(id=id)
     if str(request.user.organization) != str(order.charity_org_name) and str(request.user.organization) != str(order.donor_org_name):
       return Response(

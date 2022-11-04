@@ -39,6 +39,7 @@ class OrderListingViewSet(ModelViewSet):
     return Response(serializer.data)
   
   def create(self, request, id):
+    
     if request.user.organization is None:
       return Response(
         {'detail': 'You are not an admin of any organization'},
