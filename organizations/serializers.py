@@ -27,16 +27,6 @@ class OrganizationSerializer(serializers.ModelSerializer):
       'logo_url',
       'logo_id',
     ]
-  
-  # def create(self, validated_data):
-  #   return Organization.objects.create_organization(**validated_data)
-  
-  # def get_paginated_organizations(self, obj):
-  #   page_size = api_settings.PAGE_SIZE
-  #   organizations = obj.organizations.all()
-  #   paginator = Paginator(organizations, page_size)
-  #   paginated_organizations = paginator.page(1)
-  #   serializer = 
 
 class OrganizationAdminSerializer(serializers.ModelSerializer):
   class Meta:
