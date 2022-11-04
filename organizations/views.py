@@ -69,8 +69,9 @@ class OrganizationViewSet(ModelViewSet):
     request.data._mutable = True
     logo_file = request.data.pop('logo_image', None)
     current_logo_id = None if organization.get('logo_id') == '' else organization.get('logo_id')
+    print('current logo id', current_logo_id)
 
-    if logo_file:
+    if logo_file and logo_file[0] != '':
       new_logo_image = self.update_logo(current_logo_id, logo_file[0], 'logo_image')
       request.data.__setitem__('logo_url', new_logo_image['url'])
       request.data.__setitem__('logo_id', new_logo_image['id'])
