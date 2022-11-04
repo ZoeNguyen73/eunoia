@@ -153,4 +153,27 @@ class ListingRetrieveUpdateDeleteViewSet(ModelViewSet):
         status=status.HTTP_403_FORBIDDEN
       )
     return super().destroy(request)
+
+class ListingListByOrgView(ModelViewSet):
+  serializer_class = ListingSerializer
+  permission_classes = [IsAuthenticated,]
+  queryset = Listing.objects.all()
+
+  def list(self, request, slug):
+    if request.user.organization is None:
+      return Response(
+        {'detail': 'You are not an admin of any organization'},
+        status=status.HTTP_400_BAD_REQUEST
+      )
+    organization = Organization.objects.get(slug=slug)
+    if request.user.organization != organization:
+      return Response(
+        {"detail": "You do not have permission to perform this action."},
+        status=status.HTTP_403_FORBIDDEN
+      )
+
+    queryset = Listing.objects.filter(organization=organization)
+    serializer = ListingSerializer(queryset, many=True)
+    return Response(serializer.data)
+
     
