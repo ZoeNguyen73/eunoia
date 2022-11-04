@@ -6,7 +6,7 @@ from django.utils import timezone
 from organizations.models import Organization
 from items.models import Item
 from addresses.models import Address
-from .utils import ListingStatuses
+from .utils import ListingStatuses, TimeslotOptions
 
 class Listing(models.Model):
   id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
@@ -22,6 +22,13 @@ class Listing(models.Model):
     verbose_name='listing status',
   )
   expiry_date = models.DateField(null=True, blank=True)
+  collection_date = models.DateField(default=timezone.now)
+  timeslot = models.CharField(
+    max_length=254,
+    choices=TimeslotOptions.choices(), 
+    blank=False,
+    verbose_name='timeslot option',
+  )
   date_created = models.DateTimeField(default=timezone.now)
 
   class Meta:

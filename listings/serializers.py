@@ -14,6 +14,8 @@ class ListingSerializer(serializers.ModelSerializer):
       'status',
       'amount',
       'expiry_date',
+      'collection_date',
+      'timeslot',
       'date_created',
     ]
 
@@ -30,5 +32,7 @@ class ListingUpdateSerializer(serializers.ModelSerializer):
       'amount',
       'status',
       'expiry_date',
+      'collection_date',
+      'timeslot',
       'date_created',
     ]

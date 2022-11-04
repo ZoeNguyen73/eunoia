@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from organizations.models import Organization
 from items.models import Item
 from addresses.models import Address
+from timeslots.models import Timeslot
 from .serializers import ListingSerializer
 from .models import Listing
 from utils.permissions import IsSuperUser
@@ -113,6 +114,7 @@ class ListingRetrieveUpdateDeleteViewSet(ModelViewSet):
     return [permission() for permission in permission_classes]
 
   def partial_update(self, request, id, *args, **kwargs):
+    print('request data', request.data)
     listing = Listing.objects.get(id=id);
     if request.user.organization != listing.organization:
       return Response(
