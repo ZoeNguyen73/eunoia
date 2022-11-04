@@ -50,6 +50,7 @@ class AddressRetrieveViewSet(ModelViewSet):
   lookup_field = 'id'
   lookup_url_kwarg = 'id'
   queryset = Address.objects.all()
+  permission_classes = [IsAuthenticated,]
 
   def retrieve(self, request, slug, id):
     organization = Organization.objects.get(slug=slug)
